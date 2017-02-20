@@ -1,0 +1,10 @@
+[user]
+	name = qilab
+	email = qilab@gmx.com
+[color]
+	ui = auto
+[core]
+	excludesfile = ~/.gitignore
+	editor = vim
+	pager = less
+	autocrlf = input
