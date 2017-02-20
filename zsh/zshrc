@@ -1,0 +1,100 @@
+if [ -e /etc/profile ] ; then
+  . /etc/profile
+fi
+
+if [ -e ~/.zshrc.local ] ; then
+  . ~/.zshrc.local
+fi
+
+# fpath
+if [ -d "/usr/local/share/zsh-completions" ]; then
+  fpath=(/usr/local/share/zsh-completions $fpath)
+fi
+if [ -d "/usr/local/share/zsh/site-functions" ]; then
+  fpath=(/usr/local/share/zsh/site-functions $fpath)
+fi
+if [ -d "${HOME}/.zsh/zsh-completions" ]; then
+  fpath=("${HOME}/.zsh/zsh-completions" $fpath)
+fi
+
+autoload colors
+colors
+
+UID_COLOR=${fg[green]}
+case ${UID} in
+0)
+  UID_COLOR=${fg[red]}
+  ;;
+*)
+  ;;
+esac
+
+HOST_COLOR=0
+I=0
+for c in $(hostname | awk '{len=split($0,str,""); for(i=1; i<=len; i++){print str[i]}}')
+do
+  HOST_COLOR=$((${HOST_COLOR} + $(printf "%d" "'${c}")))
+  I=$((${I} + 1))
+done;
+HOST_COLOR="$(printf "%%F{%03d}@%%f" "$((${HOST_COLOR} / ${I}))")"
+
+# VCS
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' formats '(%s)-[%b]'
+zstyle ':vcs_info:*' actionformats '(%s)-[%b|%a]'
+precmd () {
+        psvar=()
+        LANG=en_US.UTF-8 vcs_info
+        [[ -n "$vcs_info_msg_0_" ]] && psvar[1]="$vcs_info_msg_0_"
+}
+
+PROMPT="[%{$UID_COLOR%}%n%{${reset_color}%}${HOST_COLOR}%{$reset_color%}%m] %(!.#.$) "
+PROMPT2="%{${fg[blue]}%}%_> %{${reset_color}%}"
+SPROMPT="%{${fg[red]}%}correct: %R -> %r [nyae]? %{${reset_color}%}"
+RPROMPT="%1(v|%F{green}%1v%f|) %{${fg[blue]}%}[%~]%{${reset_color}%}"
+
+bindkey ' ' magic-space  # also do history expansion on space
+
+#WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+WORDCHARS='*'
+
+bindkey -v
+
+alias -g G='| grep '
+alias -g M='| more '
+alias tmux='tmux -u'
+
+if [ 'Darwin' = $(uname -s) ]; then
+  alias ls='ls -FG'   # Mac
+else
+  alias ls='ls -Fv --color'  # Linux
+fi
+alias ll='ls -l'
+alias la='ls -a'
+
+alias be='bundle exec'
+
+setopt  auto_pushd
+setopt  pushd_ignore_dups
+
+setopt  correct
+autoload compinit
+compinit
+
+setopt braceccl
+
+HISTFILE=$HOME/.zsh-history
+HISTSIZE=100000
+SAVEHIST=100000
+setopt share_history
+setopt hist_ignore_all_dups
+setopt extended_history
+function history-all { history -E 1 }
+setopt transient_rprompt
+setopt extended_glob
+
+# JVM on Mac OSX
+if [ -e "/System/Library/Frameworks/JavaVM.framework/Versions/A/Commands/java_home" ]; then
+  export JAVA_HOME=$(/System/Library/Frameworks/JavaVM.framework/Versions/A/Commands/java_home -v "1.8")
+  PATH=${JAVA_HOME}/bin:${PATH}
+fi
