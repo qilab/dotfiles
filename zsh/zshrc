@@ -58,7 +58,8 @@ bindkey ' ' magic-space  # also do history expansion on space
 #WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 WORDCHARS='*'
 
-bindkey -v
+bindkey -e
+#bindkey -v
 
 alias -g G='| grep '
 alias -g M='| more '
