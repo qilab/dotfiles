@@ -17,7 +17,7 @@ if [ -d "${HOME}/.zsh/zsh-completions" ]; then
   fpath=("${HOME}/.zsh/zsh-completions" $fpath)
 fi
 
-autoload colors
+autoload -Uz colors
 colors
 
 UID_COLOR=${fg[green]}
@@ -79,7 +79,8 @@ setopt  auto_pushd
 setopt  pushd_ignore_dups
 
 setopt  correct
-autoload compinit
+
+autoload -U compinit
 compinit
 
 setopt braceccl
