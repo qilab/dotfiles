@@ -8,3 +8,8 @@
 	editor = vim
 	pager = less
 	autocrlf = input
+[merge]
+	tool = vimdiff
+	conflictstyle = diff3
+[mergetool]
+	prompt = false
