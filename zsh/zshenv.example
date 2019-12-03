@@ -9,6 +9,7 @@ export SCALA_HOME=${HOME}/ws/app/scala/scala-2.12.1
 export PATH=${PATH}:${SCALA_HOME}/bin
 export PATH=${PATH}:${HOME}/ws/app/sbt/sbt-0.13.13/bin
 
+# pyenv settings must be in .zshrc
 export PYENV_ROOT=${HOME}/ws/git/env/pyenv
 if [ -d "${PYENV_ROOT}" ]; then
   export PATH=${PATH}:${PYENV_ROOT}/bin
